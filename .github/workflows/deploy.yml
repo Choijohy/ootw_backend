@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           
       - name: create env file
-        working-directory: ./server
+#         working-directory: ./server
         run: |
           touch .env # touch : 빈 파일 생성 command 
           cat << EOF >> .env  # cat : concatnates (합쳐서 출력)
