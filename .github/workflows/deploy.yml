@@ -15,43 +15,52 @@ jobs:
         node-version: [14.x]
 
     steps:
-      - name: Checkout source code.
-        uses: actions/checkout@v2
-        
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - name: Run scripts in server
+        uses: appleboy/ssh-action@master
         with:
-          node-version: ${{ matrix.node-version }}
+          password: ${{ secrets.PASSWORD }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          port: ${{ secrets.PORT }}
+
+#       - name: Checkout source code.
+#         uses: actions/checkout@v2
+        
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: ${{ matrix.node-version }}
           
-      - name: create env file
-#         working-directory: ./server
-        run: |
-          touch .env # touch : 빈 파일 생성 command 
-          cat << EOF >> .env  # cat : concatnates (합쳐서 출력)
-          ${{ secrets.ENV }}
+#       - name: create env file
+# #         working-directory: ./server
+#         run: |
+#           touch .env # touch : 빈 파일 생성 command 
+#           cat << EOF >> .env  # cat : concatnates (합쳐서 출력)
+#           ${{ secrets.ENV }}
         
-      - name: build client files
-        working-directory: ./client
-        run: |
-          yarn install --frozen-lockfile
-          yarn build
+#       - name: build client files
+#         working-directory: ./client
+#         run: |
+#           yarn install --frozen-lockfile
+#           yarn build
 
-      - name: zip distributions
-        run: zip -r ziriootw.zip ./client/dist ./server ./appspec.yml ./scripts
+#       - name: zip distributions
+#         run: zip -r ziriootw.zip ./client/dist ./server ./appspec.yml ./scripts
 
-      - name: AWS configure credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+#       - name: AWS configure credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ap-northeast-2
 
-      - name: upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./ziriootw.zip s3://ziriootw/public/
+#       - name: upload to S3
+#         run: aws s3 cp --region ap-northeast-2 ./ziriootw.zip s3://ziriootw/public/
 
-      - name: deploy with AWS codeDeploy
-        run: aws deploy create-deployment
-          --application-name ootw_backend_deploy
-          --deployment-config-name CodeDeployDefault.OneAtATime
-          --deployment-group-name deploy_group
-          --s3-location bucket=ziriootw,bundleType=zip,key=public/ziriootw.zip
+#       - name: deploy with AWS codeDeploy
+#         run: aws deploy create-deployment
+#           --application-name ootw_backend_deploy
+#           --deployment-config-name CodeDeployDefault.OneAtATime
+#           --deployment-group-name deploy_group
+#           --s3-location bucket=ziriootw,bundleType=zip,key=public/ziriootw.zip
