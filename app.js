@@ -8,7 +8,8 @@ const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport =require('passport');
 const passportConfig = require('./passport');
-
+const helmet = require('helmet'); //서버 관련 보안
+const hpp = require('hpp'); // 서버 관련 보안 
 
 
 //process.env
@@ -41,22 +42,36 @@ sequelize.sync({ force:false})
   });
 
 //(3) 미들웨어
-app.use(morgan('dev'));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/img',express.static(path.join(__dirname,'uploads')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false })); // 데이터타입 multipart/form-data - req.body 사용 가능 
-app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(session({
-  resave: false,
-  saveUninitialized: false,
+if (process.env.NODE_ENV === 'production'){
+  app.enable('trust proxy');
+  app.use(morgan('combined'));
+  app.use(helmet({contentSecurityPolicy:false}));
+  app.use(hpp());
+} else{
+  app.use(morgan('dev'));
+}
+
+const sessionOption = {
+  resave:false,
+  saveUninitialized:false,
   secret: process.env.COOKIE_SECRET,
   cookie: {
     httpOnly: true,
     secure: false,
   },
-  name:'connect.sid',
-}));
+};
+if (process.env.NODE_ENV === 'production'){
+    sessionOption.proxy = true;
+}
+
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/img',express.static(path.join(__dirname,'uploads')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false })); // 데이터타입 multipart/form-data - req.body 사용 가능 
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(session(sessionOption));
 
 app.use(passport.initialize());
 app.use(passport.session());

@@ -128,12 +128,12 @@ router.get('',isLoggedIn,async(req,res,next)=>{
 }})
 
 
-router.get('/profile',isLoggedIn, async (req,res)=>{
+router.get('/profile',async (req,res)=>{
   const user_profile = await User.findOne({
     attributes:{exclude:['password']},
-    where:{id:req.user.id}});
+    where:{id:req.query.userId}});
   const userPosts = await Post.findAll({
-    where:{writer:req.user.id}
+    where:{writer:req.query.userId}
   })
     res.json({user_profile,userPosts});
 });

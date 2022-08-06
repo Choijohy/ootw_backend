@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "cross-env NODE_ENV=production PORT=80 pm2 start app.js"
+    // "start": "start app.js",
+    // "dev":"nodemon app"
   },
   "author": "ziri",
   "license": "MIT",
@@ -15,6 +17,8 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+    "helmet": "^5.1.0",
+    "hpp": "^0.2.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^2.9.0",
