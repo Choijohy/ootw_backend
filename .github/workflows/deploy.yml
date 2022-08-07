@@ -24,7 +24,7 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            git pull origin master
+            git pull origin main
             npm start
 
 #       - name: Checkout source code.
