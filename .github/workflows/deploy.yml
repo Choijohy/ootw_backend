@@ -23,7 +23,7 @@ jobs:
             cd ootw_backend
             ls -al
           host: ${{ secrets.HOST }}
-          user: root
+          user: ubuntu
           key: ${{ secrets.PRIVATE_KEY}}
           args: "-tt -vvv"
 
