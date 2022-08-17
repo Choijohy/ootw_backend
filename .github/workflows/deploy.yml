@@ -25,6 +25,9 @@ jobs:
           host: ${{ secrets.HOST }}
           user: root
           key: ${{ secrets.PRIVATE_KEY}}
+          args: "-tt"
+
+          
 #       - name: Checkout source code.
 #         uses: actions/checkout@v2
         
