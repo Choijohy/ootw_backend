@@ -21,11 +21,11 @@ jobs:
         with:
           command: |
             cd ootw_backend
-            git add .
+            ls -al
           host: ${{ secrets.HOST }}
           user: root
           key: ${{ secrets.PRIVATE_KEY}}
-          args: "-tt"
+          args: "-tt -vvv"
 
           
 #       - name: Checkout source code.
